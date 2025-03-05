@@ -1,0 +1,28 @@
+on:
+    schedule:
+        - cron: 0 */12 * * *
+    issues:
+        types:
+            - opened
+
+jobs:
+    fetch-new-messages:
+        runs-on: ubuntu:latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: set up python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.12'
+            
+            - name: Install dependencie
+              run: pip install -r requirements.txt
+            
+            - name: Install dependencie
+              run: ls ./
+
+            - name: run downloader
+              run: python3.12 ./scripts/tel-music.py
