@@ -39,7 +39,7 @@ jobs:
       - name: Run music downloader
         run: |
           source venv/bin/activate
-          python3.12 scripts/tel-music.py
+          python3.12 ./files/scripts/tel-music.py
     
       - name: install convertor
         run: sudo ap-get update && apt-get install -y ffmpeg
