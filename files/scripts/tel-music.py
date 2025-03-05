@@ -1,5 +1,7 @@
 import telebot
 import os
+import sys
+import time
 
 # Get the bot token from the environment variable
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
@@ -10,13 +12,18 @@ if not BOT_TOKEN:
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-DOWNLOAD_FOLDER = "./raw" # musics that not converted yet.
+DOWNLOAD_FOLDER = "./raw"
 
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
+last_message_time = time.time()
+inactivity_timeout = 60  # seconds of inactivity before exit
+
 @bot.message_handler(content_types=['document', 'video', 'audio', 'voice'])
 def handle_files(message):
+    global last_message_time
+    last_message_time = time.time()  # Update the last message time
     try:
         file_info = None
         file_name = None
@@ -48,9 +55,22 @@ def handle_files(message):
     except Exception as e:
         bot.reply_to(message, f"An error occurred: {e}")
 
+def check_inactivity():
+    global last_message_time
+    if time.time() - last_message_time > inactivity_timeout:
+        print("Inactivity timeout. Exiting...")
+        sys.exit(0)
+
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     bot.reply_to(message, "Send me a file, and I'll download it!")
 
 print("Bot started. Listening for files...")
-bot.polling()
+
+while True:
+    try:
+        bot.polling(none_stop=False, interval=1) # interval of 1 second
+        check_inactivity()
+    except Exception as e:
+        print(f"Error during polling: {e}")
+        time.sleep(5)  # wait before retrying
