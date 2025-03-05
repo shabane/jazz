@@ -2,6 +2,7 @@ import telebot
 import os
 import sys
 import time
+import threading
 
 # Get the bot token from the environment variable
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
@@ -20,10 +21,13 @@ if not os.path.exists(DOWNLOAD_FOLDER):
 last_message_time = time.time()
 inactivity_timeout = 60  # seconds of inactivity before exit
 
+message_received = threading.Event() # thread safe flag
+
 @bot.message_handler(content_types=['document', 'video', 'audio', 'voice'])
 def handle_files(message):
     global last_message_time
     last_message_time = time.time()  # Update the last message time
+    message_received.set() # set the message received flag
     try:
         file_info = None
         file_name = None
@@ -67,10 +71,20 @@ def send_welcome(message):
 
 print("Bot started. Listening for files...")
 
+def run_polling():
+    while True:
+        try:
+            bot.polling(none_stop=False, interval=1)
+        except Exception as e:
+            print(f"Error during polling: {e}")
+            time.sleep(5)
+
+polling_thread = threading.Thread(target=run_polling)
+polling_thread.daemon = True # allow the main thread to exit even if this thread is running
+polling_thread.start()
+
 while True:
-    try:
-        bot.polling(none_stop=False, interval=1) # interval of 1 second
-        check_inactivity()
-    except Exception as e:
-        print(f"Error during polling: {e}")
-        time.sleep(5)  # wait before retrying
+    message_received.wait(1) # wait for one second, or until a message is received.
+    if message_received.is_set():
+        message_received.clear()
+    check_inactivity()
