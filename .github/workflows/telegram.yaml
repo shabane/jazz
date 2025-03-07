@@ -42,7 +42,7 @@ jobs:
           python3.12 ./files/scripts/tel-music.py
     
       - name: install convertor
-        run: sudo ap-get update && apt-get install -y ffmpeg
+        run: sudo apt-get update && apt-get install -y ffmpeg
 
-      - name: run music convertor
-        run: ffmpeg raw/
+      - name: run audio convertor
+        run: ./files/scripts/convertor.sh
