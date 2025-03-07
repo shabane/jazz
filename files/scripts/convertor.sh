@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source directory (replace with your actual directory)
-SOURCE_DIR="."
+SOURCE_DIR="./raw"
 
 # Target directory
 TARGET_DIR="files/musics"
