@@ -12,7 +12,7 @@ if [ ! -d "$TARGET_DIR" ]; then
 fi
 
 # Find all files in the source directory
-find "$SOURCE_DIR" -type f -print0 | while IFS= read -r -d $'\0' file; do
+find -not -path ".git/" "$SOURCE_DIR" -type f -print0 | while IFS= read -r -d $'\0' file; do
   # Determine if the file is an audio file (using ffmpeg's ability to probe)
   if ffmpeg -i "$file" -f null - 2>/dev/null; then # ffmpeg returns 0 if it can read the file
       # Extract the filename without the extension
