@@ -44,5 +44,18 @@ jobs:
       - name: install convertor
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-      - name: run audio convertor
+      - name: audio convertor
         run: ./files/scripts/convertor.sh
+
+      - name: Make changes (example)
+        run: |
+          git config user.name "shabane"
+          git config user.email "m.mohamadshabane@gmail.com"
+          git add files/musics
+          git commit -m "[music] added ${{ github.event.issue.number }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
