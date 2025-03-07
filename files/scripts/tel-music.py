@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import telebot
 import os
 import sys
