@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# Source directory (replace with your actual directory)
-SOURCE_DIR="./raw"
+SOURCE_DIR="files/scripts/raw"
 
-# Target directory
 TARGET_DIR="files/musics"
 
-# Check if the target directory exists, create it if not
 if [ ! -d "$TARGET_DIR" ]; then
   mkdir -p "$TARGET_DIR"
 fi
 
-# Find all files in the source directory
-find "$SOURCE_DIR" -type f -iname "*mp3" -exec ffmpeg -y -i {} {}.opus \;
-
-# Move all opus file to musics dir
-mv "$SOURCE_DIR"/*opus files/musics/
+# I did this couse that i can add/remove other convertor simply
+./convertors/mp3_convertor.sh
+./convertors/m4a_convertor.sh
+./convertors/mp4_convertor.sh
+./convertors/ogg_convertor.sh
+./convertors/wav_convertor.sh
+./convertors/flac_convertor.sh
