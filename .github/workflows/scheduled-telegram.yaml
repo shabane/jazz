@@ -1,4 +1,4 @@
-name: Download Telegram Music
+name: Download Telegram Music[scheduled]
 
 on:
   schedule:
@@ -7,7 +7,6 @@ on:
 jobs:
   download-music:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
 
     steps:
       - name: Checkout code
@@ -39,8 +38,29 @@ jobs:
       - name: install convertor
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-      - name: audio convertor
-        run: ./files/scripts/convertor.sh
+      - name: mp3 convertor
+        run: ./files/scripts/mp3_convertor.sh
+        continue-on-error: true
+
+      - name: flac convertor
+        run: ./files/scripts/flac_convertor.sh
+        continue-on-error: true
+
+      - name: ogg convertor
+        run: ./files/scripts/ogg_convertor.sh
+        continue-on-error: true
+
+      - name: wav convertor
+        run: ./files/scripts/wav_convertor.sh
+        continue-on-error: true
+
+      - name: mp4 convertor
+        run: ./files/scripts/mp4_convertor.sh
+        continue-on-error: true
+
+      - name: m4a convertor
+        run: ./files/scripts/m4a_convertor.sh
+        continue-on-error: true
 
       - name: Make changes (example)
         run: |
